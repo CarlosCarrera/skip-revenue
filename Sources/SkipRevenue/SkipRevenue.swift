@@ -1294,7 +1294,10 @@ public struct RevenueCatFuse: @unchecked Sendable {
         let params = PurchaseParams.Builder(androidActivity, kotlinPackage).build()
 
         do {
-            let result = Purchases.sharedInstance.awaitPurchase(params)
+            // RevenueCat creates an Android Handler to start the purchase flow, which
+            // needs a thread with a Looper: the bridge calls this on a background
+            // coroutine, so hop to the main thread first.
+            let result = try await MainActor.run { Purchases.sharedInstance.awaitPurchase(params) }
             let wrappedCustomerInfo = RCFuseCustomerInfo(customerInfo: result.customerInfo)
             Self.cachedCustomerInfoValue = wrappedCustomerInfo
             return wrappedCustomerInfo
