@@ -1085,10 +1085,14 @@ public struct RevenueCatFuse: @unchecked Sendable {
     /// Use the platform-specific API key from your RevenueCat dashboard.
     public func configure(apiKey: String) {
         #if !SKIP
+        #if DEBUG
         Purchases.logLevel = .debug
+        #endif
         Purchases.configure(withAPIKey: apiKey)
         #else
+        #if DEBUG
         Purchases.debugLogsEnabled = true
+        #endif
         let context = ProcessInfo.processInfo.androidContext
         let builder = PurchasesConfiguration.Builder(context, apiKey)
         let config = builder.build()
@@ -1099,10 +1103,14 @@ public struct RevenueCatFuse: @unchecked Sendable {
     /// Configure the RevenueCat SDK with an API key and an app user ID.
     public func configure(apiKey: String, appUserID: String) {
         #if !SKIP
+        #if DEBUG
         Purchases.logLevel = .debug
+        #endif
         Purchases.configure(withAPIKey: apiKey, appUserID: appUserID)
         #else
+        #if DEBUG
         Purchases.debugLogsEnabled = true
+        #endif
         let context = ProcessInfo.processInfo.androidContext
         let builder = PurchasesConfiguration.Builder(context, apiKey).appUserID(appUserID)
         let config = builder.build()
